@@ -1,0 +1,6 @@
+sqlalchemy==2.0.28
+psycopg2-binary==2.9.9
+pydantic-settings==2.2.1
+redis==5.0.3
+rq==1.16.2
+apscheduler==3.10.4
