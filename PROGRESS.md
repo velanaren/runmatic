@@ -8,12 +8,12 @@
 ## Current State
 
 ```
-SESSION_PHASE:          session-0b          (setup | session-0b | active-sprints | complete)
+SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
 CURRENT_SPRINT:         00                  (00 = not started)
 SPRINT_TOPIC:           —
 APP_BUILT:              true                (true after Session 0A completes)
-ARCHITECTURE_REVIEW:    false               (true after Session 0B passes 4/5 questions)
+ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
 
 ---
@@ -26,11 +26,12 @@ Session 0A (App Generation):          COMPLETE — 2026-03-17
   Files created:                      54
   RUNMATIC.md populated:              true
 
-Session 0B (Architecture Review):     NOT STARTED
-  Questions attempted:                0/5
-  Questions passed:                   0/5
-  Sprint 01 unlocked:                 false
-  ARCHITECTURE_REVIEW.md written:     false
+Session 0B (Architecture Review):     COMPLETE — 2026-03-26
+  Questions attempted:                5/5
+  Questions passed:                   4/5
+  Sprint 01 unlocked:                 true
+  ARCHITECTURE_REVIEW.md written:     true
+  Miss:                               Q5 — could not name the 6 API env vars (Sprint 04 focus)
 ```
 
 ---
@@ -39,7 +40,7 @@ Session 0B (Architecture Review):     NOT STARTED
 
 | Sprint | Topic | Type | Concept | Execution | Speed | Total | Date | Bonus |
 |--------|-------|------|---------|-----------|-------|-------|------|-------|
-| 01 | Containers & Mental Model | 🔭 | — | — | — | —/20 | — | — |
+| 01 | Containers & Mental Model | 🔭 | 7 | 9 | +1 | 17/20 | 2026-03-26 | Unlocked |
 | 02 | Images & Layers | 🔭 | — | — | — | —/20 | — | — |
 | 03 | Writing Dockerfiles | 🔨 | — | — | — | —/20 | — | — |
 | 04 | Environment & Config | 🔨 | — | — | — | —/20 | — | — |
@@ -52,7 +53,7 @@ Session 0B (Architecture Review):     NOT STARTED
 | 11 | Health Checks & Restart | 🔨 | — | — | — | —/20 | — | — |
 | 12 | Act 1 Capstone | 🏁 | — | — | — | —/30 | — | — |
 
-**Act 1 Status:** 🔒 LOCKED — Complete Session 0A and 0B first
+**Act 1 Status:** 🟢 UNLOCKED — Session 0A and 0B complete
 **Act 1 Unlock:** Score 24+/30 on Sprint 12 Capstone
 
 ---
@@ -98,13 +99,13 @@ Session 0B (Architecture Review):     NOT STARTED
 ## Performance Stats
 
 ```
-Current Streak:             0 sessions
-Longest Streak:             0 sessions
-Best Sprint Score:          — /20
-Average Sprint Score:       —
+Current Streak:             1 sessions
+Longest Streak:             1 sessions
+Best Sprint Score:          17/20
+Average Sprint Score:       17.0
 Perfect Scores (20/20):     0
-Bonus Challenges Earned:    0
-Bonus Challenges Won:       0
+Bonus Challenges Earned:    1
+Bonus Challenges Won:       1 (Sprint 01 — 9/10)
 Deep Dives Completed:       0
 ```
 
@@ -113,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-03-17
-Sprint:              Session 0A
-What was built:      Complete Runmatic application — 54 files across api/, worker/, frontend/, db/
-Key concept:         Full-stack SRE runbook platform with staleness tracking, incident management, deployment webhooks
-What was missed:     —
-Carry forward:       Understand the architecture before Sprint 01 — read RUNMATIC.md thoroughly
-Next session:        Session 0B — Architecture Review (5 questions, pass 4/5 to unlock Sprint 01)
+Date:                2026-03-26
+Sprint:              01 — Containers & the Docker Mental Model
+What was built:      Ran, inspected, stopped, diagnosed, and fixed containers using redis:7-alpine
+Key concept:         Container = isolated process sharing host OS kernel. Port mapping = the only door through the network wall.
+What was missed:     "Virtualizes the OS" is wrong — containers SHARE the kernel via namespaces/cgroups. Image vs container distinction.
+Carry forward:       Image = recipe (static). Container = running instance. Dockerfile builds the image. docker run creates the container.
+Next session:        Sprint 02 — Images & Layers
 ```
 
 ---
