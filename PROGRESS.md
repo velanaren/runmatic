@@ -41,7 +41,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | Sprint | Topic | Type | Concept | Execution | Speed | Total | Date | Bonus |
 |--------|-------|------|---------|-----------|-------|-------|------|-------|
 | 01 | Containers & Mental Model | 🔭 | 7 | 9 | +1 | 17/20 | 2026-03-26 | Unlocked |
-| 02 | Images & Layers | 🔭 | — | — | — | —/20 | — | — |
+| 02 | Images & Layers | 🔭 | 8 | 10 | +1 | 19/20 | 2026-03-29 | Unlocked |
 | 03 | Writing Dockerfiles | 🔨 | — | — | — | —/20 | — | — |
 | 04 | Environment & Config | 🔨 | — | — | — | —/20 | — | — |
 | 05 | Volumes & Persistence | 🔨 | — | — | — | —/20 | — | — |
@@ -99,13 +99,13 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             1 sessions
-Longest Streak:             1 sessions
-Best Sprint Score:          17/20
-Average Sprint Score:       17.0
+Current Streak:             2 sessions
+Longest Streak:             2 sessions
+Best Sprint Score:          19/20
+Average Sprint Score:       18.0
 Perfect Scores (20/20):     0
-Bonus Challenges Earned:    1
-Bonus Challenges Won:       1 (Sprint 01 — 9/10)
+Bonus Challenges Earned:    2
+Bonus Challenges Won:       2 (Sprint 01 — 9/10, Sprint 02 — 10/10)
 Deep Dives Completed:       0
 ```
 
@@ -114,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-03-26
-Sprint:              01 — Containers & the Docker Mental Model
-What was built:      Ran, inspected, stopped, diagnosed, and fixed containers using redis:7-alpine
-Key concept:         Container = isolated process sharing host OS kernel. Port mapping = the only door through the network wall.
-What was missed:     "Virtualizes the OS" is wrong — containers SHARE the kernel via namespaces/cgroups. Image vs container distinction.
-Carry forward:       Image = recipe (static). Container = running instance. Dockerfile builds the image. docker run creates the container.
-Next session:        Sprint 02 — Images & Layers
+Date:                2026-03-29
+Sprint:              02 — Images & Layers
+What was built:      Pulled python:3.11-slim and 3.12-slim, proved shared layers via comm + SHA256, verified disk savings with docker system df -v
+Key concept:         Image = stack of read-only filesystem layers. Shared layers stored once. docker system df shows real disk usage vs claimed size.
+What was missed:     Build-time layer cache invalidation cascade. Read-only image layers + writable container layer distinction.
+Carry forward:       COPY requirements.txt + pip install BEFORE COPY . — or every code change triggers full pip reinstall in Sprint 03.
+Next session:        Sprint 03 — Writing Dockerfiles
 ```
 
 ---

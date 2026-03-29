@@ -22,10 +22,10 @@ The application was generated with AI to production standards. The infrastructur
 | | |
 |--|--|
 | **Current Act** | Act 1 — Docker |
-| **Sprints Completed** | 1 / 32 |
-| **Average Score** | 17.0 / 20 |
-| **Best Sprint** | Sprint 01 — 17/20 |
-| **Current Streak** | 1 🔥 |
+| **Sprints Completed** | 2 / 32 |
+| **Average Score** | 18.0 / 20 |
+| **Best Sprint** | Sprint 02 — 19/20 |
+| **Current Streak** | 2 🔥 |
 | **Bonus Challenges** | 1 won / 1 attempted |
 | **Act 1 Status** | 🟢 Sprint 02 up next |
 | **Act 2 Status** | 🔒 Locked |
@@ -36,6 +36,7 @@ The application was generated with AI to production standards. The infrastructur
 | Sprint | Topic | Score | Bonus | Date |
 |--------|-------|-------|-------|------|
 | 01 | Containers & the Docker Mental Model | 17/20 | 9/10 | 2026-03-26 |
+| 02 | Images & Layers | 19/20 | 10/10 | 2026-03-29 |
 
 *Updated after every sprint commit.*
 
