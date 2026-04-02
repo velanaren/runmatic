@@ -24,6 +24,8 @@ logger = logging.getLogger(__name__)
 
 
 def run_migrations() -> None:
+    """Run Alembic migrations synchronously. Must be called from a thread,
+    not directly from an async context, because env.py uses asyncio.run()."""
     logger.info("Running Alembic migrations")
     cfg = Config("alembic.ini")
     command.upgrade(cfg, "head")
@@ -32,12 +34,21 @@ def run_migrations() -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    # Startup — run migrations in a thread executor so asyncio.run() inside
+    # env.py doesn't conflict with uvicorn's already-running event loop
+    import asyncio
+
+    loop = asyncio.get_event_loop()
     try:
-        run_migrations()
+        await loop.run_in_executor(None, run_migrations)
     except Exception as exc:
-        logger.error("Migration failed — aborting startup", extra={"error": str(exc)})
-        sys.exit(1)
+        # Log and continue — API starts in degraded mode if DB is unavailable.
+        # Health endpoint will report db: disconnected. This allows the container
+        # to pass liveness checks and wait for the database to become ready.
+        logger.warning(
+            "Migrations skipped — database unavailable at startup",
+            extra={"error": str(exc)},
+        )
 
     logger.info(
         "Runmatic API starting",
@@ -211,3 +222,6 @@ def _handle_sigterm(signum: int, frame: Any) -> None:
 
 
 signal.signal(signal.SIGTERM, _handle_sigterm)
+# test
+# test
+# test

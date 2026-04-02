@@ -49,6 +49,7 @@ async def run_async_migrations() -> None:
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        connect_args={"timeout": 5},  # fail fast if postgres is unreachable
     )
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
