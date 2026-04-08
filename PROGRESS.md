@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         00                  (00 = not started)
-SPRINT_TOPIC:           —
+CURRENT_SPRINT:         04                  (00 = not started)
+SPRINT_TOPIC:           Environment & Config
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -43,7 +43,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 01 | Containers & Mental Model | 🔭 | 7 | 9 | +1 | 17/20 | 2026-03-26 | Unlocked |
 | 02 | Images & Layers | 🔭 | 8 | 10 | +1 | 19/20 | 2026-03-29 | Unlocked |
 | 03 | Writing Dockerfiles | 🔨 | 9 | 9 | +1 | 19/20 | 2026-03-31 | Unlocked |
-| 04 | Environment & Config | 🔨 | — | — | — | —/20 | — | — |
+| 04 | Environment & Config | 🔨 | 9 | 9 | +1 | 19/20 | 2026-04-08 | Unlocked (7.5/10) |
 | 05 | Volumes & Persistence | 🔨 | — | — | — | —/20 | — | — |
 | 06 | Container Networking | 🔨 | — | — | — | —/20 | — | — |
 | 07 | Docker Compose v1 | 🔨 | — | — | — | —/20 | — | — |
@@ -99,13 +99,13 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             3 sessions
-Longest Streak:             3 sessions
+Current Streak:             4 sessions
+Longest Streak:             4 sessions
 Best Sprint Score:          19/20
-Average Sprint Score:       18.3
+Average Sprint Score:       18.5
 Perfect Scores (20/20):     0
-Bonus Challenges Earned:    3
-Bonus Challenges Won:       3 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10)
+Bonus Challenges Earned:    4
+Bonus Challenges Won:       4 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10)
 Deep Dives Completed:       0
 ```
 
@@ -114,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-03-31
-Sprint:              03 — Writing Dockerfiles
-What was built:      Dockerfile.api — correct layer order, exec form CMD, --no-cache-dir. Health endpoint responds. Proved 0.1s vs 29.5s caching.
-Key concept:         Dockerfile = reproducible server setup as code. Layer order controls build speed. exec form = PID 1 = graceful SIGTERM handling.
-What was missed:     EXPOSE is documentation only (not port publishing). No .dockerignore created.
-Carry forward:       EXPOSE documents. -p publishes. Sprint 07 Compose uses ports: key — EXPOSE alone does nothing for connectivity.
-Next session:        Sprint 04 — Environment & Configuration
+Date:                2026-04-08
+Sprint:              04 — Environment & Configuration
+What was built:      Container runs with config injected via -e flags and --env-file. .env.example documents all 6 vars. Verified gitignore protects .env. Bonus: diagnosed baked-password deployment bug.
+Key concept:         Config must be injected at runtime, never baked into image. ENV in Dockerfile = visible in docker inspect. .env (gitignored) for local dev. Secret managers for prod.
+What was missed:     .env vs .env.example distinction — .env DOES contain secrets for local dev (gitignored). Prod skips .env entirely, uses secret managers.
+Carry forward:       Env vars are a stepping stone, not the destination. Fine for non-secret config, acceptable for local dev (gitignored .env), wrong for prod. Sprint 07 Compose uses .env heavily.
+Next session:        Sprint 05 — Volumes & Persistence
 ```
 
 ---
