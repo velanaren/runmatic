@@ -22,12 +22,12 @@ The application was generated with AI to production standards. The infrastructur
 | | |
 |--|--|
 | **Current Act** | Act 1 — Docker |
-| **Sprints Completed** | 4 / 32 |
-| **Average Score** | 18.5 / 20 |
-| **Best Sprint** | Sprint 02/03/04 — 19/20 |
-| **Current Streak** | 4 🔥 |
-| **Bonus Challenges** | 4 won / 4 attempted |
-| **Act 1 Status** | 🟢 Sprint 05 up next |
+| **Sprints Completed** | 5 / 32 |
+| **Average Score** | 18.8 / 20 |
+| **Best Sprint** | Sprint 05 — 20/20 |
+| **Current Streak** | 5 🔥 |
+| **Bonus Challenges** | 5 won / 5 attempted |
+| **Act 1 Status** | 🟢 Sprint 06 up next |
 | **Act 2 Status** | 🔒 Locked |
 | **Act 3 Status** | 🔒 Locked |
 
@@ -39,6 +39,7 @@ The application was generated with AI to production standards. The infrastructur
 | 02 | Images & Layers | 19/20 | 10/10 | 2026-03-29 |
 | 03 | Writing Dockerfiles | 19/20 | 10/10 | 2026-03-31 |
 | 04 | Environment & Configuration | 19/20 | 7.5/10 | 2026-04-08 |
+| 05 | Volumes & Persistence | 20/20 | 10/10 | 2026-04-09 |
 
 *Updated after every sprint commit.*
 

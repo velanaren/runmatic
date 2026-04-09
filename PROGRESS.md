@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         04                  (00 = not started)
-SPRINT_TOPIC:           Environment & Config
+CURRENT_SPRINT:         05                  (00 = not started)
+SPRINT_TOPIC:           Volumes & Persistence
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -44,7 +44,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 02 | Images & Layers | 🔭 | 8 | 10 | +1 | 19/20 | 2026-03-29 | Unlocked |
 | 03 | Writing Dockerfiles | 🔨 | 9 | 9 | +1 | 19/20 | 2026-03-31 | Unlocked |
 | 04 | Environment & Config | 🔨 | 9 | 9 | +1 | 19/20 | 2026-04-08 | Unlocked (7.5/10) |
-| 05 | Volumes & Persistence | 🔨 | — | — | — | —/20 | — | — |
+| 05 | Volumes & Persistence | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-09 | Unlocked (10/10) |
 | 06 | Container Networking | 🔨 | — | — | — | —/20 | — | — |
 | 07 | Docker Compose v1 | 🔨 | — | — | — | —/20 | — | — |
 | 08 | Docker Compose v2 | 🔨 | — | — | — | —/20 | — | — |
@@ -99,13 +99,13 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             4 sessions
-Longest Streak:             4 sessions
-Best Sprint Score:          19/20
-Average Sprint Score:       18.5
-Perfect Scores (20/20):     0
-Bonus Challenges Earned:    4
-Bonus Challenges Won:       4 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10)
+Current Streak:             5 sessions
+Longest Streak:             5 sessions
+Best Sprint Score:          20/20
+Average Sprint Score:       18.8
+Perfect Scores (20/20):     1
+Bonus Challenges Earned:    5
+Bonus Challenges Won:       5 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10)
 Deep Dives Completed:       0
 ```
 
@@ -114,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-08
-Sprint:              04 — Environment & Configuration
-What was built:      Container runs with config injected via -e flags and --env-file. .env.example documents all 6 vars. Verified gitignore protects .env. Bonus: diagnosed baked-password deployment bug.
-Key concept:         Config must be injected at runtime, never baked into image. ENV in Dockerfile = visible in docker inspect. .env (gitignored) for local dev. Secret managers for prod.
-What was missed:     .env vs .env.example distinction — .env DOES contain secrets for local dev (gitignored). Prod skips .env entirely, uses secret managers.
-Carry forward:       Env vars are a stepping stone, not the destination. Fine for non-secret config, acceptable for local dev (gitignored .env), wrong for prod. Sprint 07 Compose uses .env heavily.
-Next session:        Sprint 05 — Volumes & Persistence
+Date:                2026-04-09
+Sprint:              05 — Volumes & Persistence
+What was built:      Named volume for PostgreSQL. Data persists across container removal and recreation. Discovered anonymous volumes automatically created by postgres image. Completed backup/restore challenge without hints using Alpine tool container.
+Key concept:         Container lifecycle (ephemeral) must be separate from data lifecycle (persistent). Volumes are external storage managed by Docker, mounted into containers. Named volumes are explicit and manageable. Anonymous volumes are orphans.
+What was missed:     Nothing critical. Only missing technical depth on Docker's driver abstraction (local vs network storage drivers).
+Carry forward:       Anonymous volumes are orphans waiting to fill your disk. In Sprint 07 Compose you'll define volumes in YAML so they're always named and managed explicitly.
+Next session:        Sprint 06 — Container Networking
 ```
 
 ---
