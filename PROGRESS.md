@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         05                  (00 = not started)
-SPRINT_TOPIC:           Volumes & Persistence
+CURRENT_SPRINT:         06                  (00 = not started)
+SPRINT_TOPIC:           Container Networking
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -45,7 +45,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 03 | Writing Dockerfiles | 🔨 | 9 | 9 | +1 | 19/20 | 2026-03-31 | Unlocked |
 | 04 | Environment & Config | 🔨 | 9 | 9 | +1 | 19/20 | 2026-04-08 | Unlocked (7.5/10) |
 | 05 | Volumes & Persistence | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-09 | Unlocked (10/10) |
-| 06 | Container Networking | 🔨 | — | — | — | —/20 | — | — |
+| 06 | Container Networking | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-10 | Unlocked (10/10) |
 | 07 | Docker Compose v1 | 🔨 | — | — | — | —/20 | — | — |
 | 08 | Docker Compose v2 | 🔨 | — | — | — | —/20 | — | — |
 | 09 | Frontend Container | 🔨 | — | — | — | —/20 | — | — |
@@ -99,13 +99,13 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             5 sessions
-Longest Streak:             5 sessions
+Current Streak:             6 sessions
+Longest Streak:             6 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       18.8
-Perfect Scores (20/20):     1
-Bonus Challenges Earned:    5
-Bonus Challenges Won:       5 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10)
+Average Sprint Score:       19.0
+Perfect Scores (20/20):     2
+Bonus Challenges Earned:    6
+Bonus Challenges Won:       6 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10)
 Deep Dives Completed:       0
 ```
 
@@ -114,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-09
-Sprint:              05 — Volumes & Persistence
-What was built:      Named volume for PostgreSQL. Data persists across container removal and recreation. Discovered anonymous volumes automatically created by postgres image. Completed backup/restore challenge without hints using Alpine tool container.
-Key concept:         Container lifecycle (ephemeral) must be separate from data lifecycle (persistent). Volumes are external storage managed by Docker, mounted into containers. Named volumes are explicit and manageable. Anonymous volumes are orphans.
-What was missed:     Nothing critical. Only missing technical depth on Docker's driver abstraction (local vs network storage drivers).
-Carry forward:       Anonymous volumes are orphans waiting to fill your disk. In Sprint 07 Compose you'll define volumes in YAML so they're always named and managed explicitly.
-Next session:        Sprint 06 — Container Networking
+Date:                2026-04-10
+Sprint:              06 — Container Networking
+What was built:      Custom Docker network with DNS resolution. API + PostgreSQL + Redis communicating by hostname. Tested network isolation by moving postgres between networks. Demonstrated multi-network containers bridging isolated segments.
+Key concept:         Default bridge has no DNS — only IP communication. Custom networks enable Docker's embedded DNS where container name = hostname. Networks isolate containers. A container can join multiple networks to bridge them.
+What was missed:     Published ports (-p) vs internal network communication. Published ports are for host access. Containers on the same network don't need -p to talk to each other.
+Carry forward:       Networks isolate by default. In Sprint 07 Compose creates a network automatically for all services in the compose file. That's why compose services can find each other by name without you creating a network manually.
+Next session:        Sprint 07 — Docker Compose v1
 ```
 
 ---
