@@ -22,12 +22,12 @@ The application was generated with AI to production standards. The infrastructur
 | | |
 |--|--|
 | **Current Act** | Act 1 — Docker |
-| **Sprints Completed** | 5 / 32 |
-| **Average Score** | 18.8 / 20 |
-| **Best Sprint** | Sprint 05 — 20/20 |
-| **Current Streak** | 5 🔥 |
-| **Bonus Challenges** | 5 won / 5 attempted |
-| **Act 1 Status** | 🟢 Sprint 06 up next |
+| **Sprints Completed** | 7 / 32 |
+| **Average Score** | 19.1 / 20 |
+| **Best Sprint** | 20/20 (Sprints 05, 06, 07) |
+| **Current Streak** | 7 🔥 |
+| **Bonus Challenges** | 7 won / 7 attempted |
+| **Act 1 Status** | 🟢 Sprint 08 up next |
 | **Act 2 Status** | 🔒 Locked |
 | **Act 3 Status** | 🔒 Locked |
 
@@ -40,6 +40,8 @@ The application was generated with AI to production standards. The infrastructur
 | 03 | Writing Dockerfiles | 19/20 | 10/10 | 2026-03-31 |
 | 04 | Environment & Configuration | 19/20 | 7.5/10 | 2026-04-08 |
 | 05 | Volumes & Persistence | 20/20 | 10/10 | 2026-04-09 |
+| 06 | Container Networking | 20/20 | 10/10 | 2026-04-10 |
+| 07 | Docker Compose v1 | 20/20 | 10/10 | 2026-04-11 |
 
 *Updated after every sprint commit.*
 
@@ -144,16 +146,20 @@ runmatic/
 │   └── db/                 # Alembic migrations + seed data
 │
 ├── infra/                  # Infrastructure (hand-written, sprint by sprint)
-│   ├── docker/             # Act 1: Dockerfiles, Compose files
-│   │   ├── sprint-01-fundamentals/
+│   ├── act1/               # Act 1: Docker
 │   │   ├── sprint-03-dockerfiles/
 │   │   │   ├── Dockerfile.api      ← I wrote this
-│   │   │   ├── README.md           ← My understanding
+│   │   │   ├── notes.md            ← Full sprint narrative
 │   │   │   ├── commands.sh         ← Annotated command history
 │   │   │   └── SCORE.md            ← Honest feedback card
+│   │   ├── sprint-07-compose-v1/
+│   │   │   ├── docker-compose.yml  ← I wrote this
+│   │   │   ├── notes.md
+│   │   │   ├── commands.sh
+│   │   │   └── SCORE.md
 │   │   └── ...
-│   ├── k8s/                # Act 2: Kubernetes manifests
-│   └── cloud/              # Act 3: Terraform, AWS configs
+│   ├── act2/               # Act 2: Kubernetes manifests
+│   └── act3/               # Act 3: Terraform, AWS configs
 │
 ├── ARCHITECTURE_REVIEW.md  # My analysis of Runmatic before touching infra/
 ├── CHANGELOG.md            # Act completions and milestone moments

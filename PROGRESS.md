@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         06                  (00 = not started)
-SPRINT_TOPIC:           Container Networking
+CURRENT_SPRINT:         07                  (00 = not started)
+SPRINT_TOPIC:           Docker Compose v1
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -46,7 +46,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 04 | Environment & Config | 🔨 | 9 | 9 | +1 | 19/20 | 2026-04-08 | Unlocked (7.5/10) |
 | 05 | Volumes & Persistence | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-09 | Unlocked (10/10) |
 | 06 | Container Networking | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-10 | Unlocked (10/10) |
-| 07 | Docker Compose v1 | 🔨 | — | — | — | —/20 | — | — |
+| 07 | Docker Compose v1 | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-11 | Unlocked (10/10) |
 | 08 | Docker Compose v2 | 🔨 | — | — | — | —/20 | — | — |
 | 09 | Frontend Container | 🔨 | — | — | — | —/20 | — | — |
 | 10 | Multi-Stage Builds | 🔨 | — | — | — | —/20 | — | — |
@@ -99,13 +99,13 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             6 sessions
-Longest Streak:             6 sessions
+Current Streak:             7 sessions
+Longest Streak:             7 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       19.0
-Perfect Scores (20/20):     2
-Bonus Challenges Earned:    6
-Bonus Challenges Won:       6 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10)
+Average Sprint Score:       19.1
+Perfect Scores (20/20):     3
+Bonus Challenges Earned:    7
+Bonus Challenges Won:       7 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10)
 Deep Dives Completed:       0
 ```
 
@@ -114,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-10
-Sprint:              06 — Container Networking
-What was built:      Custom Docker network with DNS resolution. API + PostgreSQL + Redis communicating by hostname. Tested network isolation by moving postgres between networks. Demonstrated multi-network containers bridging isolated segments.
-Key concept:         Default bridge has no DNS — only IP communication. Custom networks enable Docker's embedded DNS where container name = hostname. Networks isolate containers. A container can join multiple networks to bridge them.
-What was missed:     Published ports (-p) vs internal network communication. Published ports are for host access. Containers on the same network don't need -p to talk to each other.
-Carry forward:       Networks isolate by default. In Sprint 07 Compose creates a network automatically for all services in the compose file. That's why compose services can find each other by name without you creating a network manually.
-Next session:        Sprint 07 — Docker Compose v1
+Date:                2026-04-11
+Sprint:              07 — Docker Compose v1
+What was built:      docker-compose.yml defining API + PostgreSQL + Redis as services. One command (docker compose up) starts entire stack. Tested persistence with down/up cycles. Explored -v flag (volume destruction).
+Key concept:         Compose auto-creates a network and attaches all services to it, registering service names as DNS hostnames. depends_on controls startup order but doesn't guarantee readiness — health checks or app retries needed. When you declare networks: for a service, it ONLY joins those networks (not default). Services without explicit networks: join default. Mix them = network isolation.
+What was missed:     Brevity — asked for 3 sentences, gave a comprehensive essay. Content was correct but needs practice condensing to core insight.
+Carry forward:       Compose auto-network means you don't manually create networks anymore. Sprint 08 adds worker to the compose file — four services, one network, still one command. The pattern scales.
+Next session:        Sprint 08 — Docker Compose v2 (adding worker service)
 ```
 
 ---

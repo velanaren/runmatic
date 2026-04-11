@@ -1,0 +1,34 @@
+services:
+ postgres:
+  image: postgres:15-alpine
+  container_name: postgres1
+  environment:
+   POSTGRES_DB: runmatic
+   POSTGRES_USER: runmatic
+   POSTGRES_PASSWORD: devpassword
+  volumes:
+   - postgres-data:/var/lib/postgresql/data
+ 
+ redis:
+  image: redis:7-alpine
+  container_name: redis1
+
+
+
+ api:
+  image: runmatic-api-v1
+  container_name: api1
+  ports:
+   - "8000:8000"
+  environment:
+   DATABASE_URL: postgresql+asyncpg://runmatic:devpassword@postgres:5432/runmatic
+   REDIS_URL: redis://redis:6379/0
+   SECRET_KEY: dev-secret-key
+  networks:
+   - backend
+
+volumes:
+ postgres-data:
+
+networks:
+ backend:			
