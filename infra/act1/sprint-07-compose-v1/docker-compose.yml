@@ -24,11 +24,9 @@ services:
    DATABASE_URL: postgresql+asyncpg://runmatic:devpassword@postgres:5432/runmatic
    REDIS_URL: redis://redis:6379/0
    SECRET_KEY: dev-secret-key
-  networks:
-   - backend
+  depends_on:
+   - postgres
+   - redis 
 
 volumes:
  postgres-data:
-
-networks:
- backend:			

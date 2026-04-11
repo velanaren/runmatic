@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         07                  (00 = not started)
-SPRINT_TOPIC:           Docker Compose v1
+CURRENT_SPRINT:         08                  (00 = not started)
+SPRINT_TOPIC:           Docker Compose v2
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -47,7 +47,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 05 | Volumes & Persistence | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-09 | Unlocked (10/10) |
 | 06 | Container Networking | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-10 | Unlocked (10/10) |
 | 07 | Docker Compose v1 | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-11 | Unlocked (10/10) |
-| 08 | Docker Compose v2 | 🔨 | — | — | — | —/20 | — | — |
+| 08 | Docker Compose v2 | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-11 | Unlocked (7/10) |
 | 09 | Frontend Container | 🔨 | — | — | — | —/20 | — | — |
 | 10 | Multi-Stage Builds | 🔨 | — | — | — | —/20 | — | — |
 | 11 | Health Checks & Restart | 🔨 | — | — | — | —/20 | — | — |
@@ -99,13 +99,13 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             7 sessions
-Longest Streak:             7 sessions
+Current Streak:             8 sessions
+Longest Streak:             8 sessions
 Best Sprint Score:          20/20
 Average Sprint Score:       19.1
-Perfect Scores (20/20):     3
-Bonus Challenges Earned:    7
-Bonus Challenges Won:       7 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10)
+Perfect Scores (20/20):     4
+Bonus Challenges Earned:    8
+Bonus Challenges Won:       7 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10)
 Deep Dives Completed:       0
 ```
 
@@ -115,12 +115,12 @@ Deep Dives Completed:       0
 
 ```
 Date:                2026-04-11
-Sprint:              07 — Docker Compose v1
-What was built:      docker-compose.yml defining API + PostgreSQL + Redis as services. One command (docker compose up) starts entire stack. Tested persistence with down/up cycles. Explored -v flag (volume destruction).
-Key concept:         Compose auto-creates a network and attaches all services to it, registering service names as DNS hostnames. depends_on controls startup order but doesn't guarantee readiness — health checks or app retries needed. When you declare networks: for a service, it ONLY joins those networks (not default). Services without explicit networks: join default. Mix them = network isolation.
-What was missed:     Brevity — asked for 3 sentences, gave a comprehensive essay. Content was correct but needs practice condensing to core insight.
-Carry forward:       Compose auto-network means you don't manually create networks anymore. Sprint 08 adds worker to the compose file — four services, one network, still one command. The pattern scales.
-Next session:        Sprint 08 — Docker Compose v2 (adding worker service)
+Sprint:              08 — Docker Compose v2
+What was built:      Extended compose file with worker service + health checks for all services. API waits for postgres/redis healthy. Worker waits for postgres/redis/API healthy (needs migrations). Four services with enforced dependency cascade.
+Key concept:         Health checks enable condition: service_healthy (wait for actual readiness, not just process start). Independently discovered worker depends on API for schema (migrations). Debugged health check false positive: pg_isready checks connectivity, psql checks authentication. Redis bound to 127.0.0.1 passes own health check but unreachable from other containers.
+What was missed:     Bonus challenge incomplete — diagnosed redis bind issue but didn't implement and verify the fix. Diagnosis without verification doesn't resolve incidents.
+Carry forward:       Health check parameters (test, interval, timeout, retries, start_period) map directly to Kubernetes liveness and readiness probes in Sprint 14. Same concepts, different YAML.
+Next session:        Sprint 09 — Frontend Container (containerize React UI, Nginx proxy)
 ```
 
 ---
