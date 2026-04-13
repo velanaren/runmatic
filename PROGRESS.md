@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         08                  (00 = not started)
-SPRINT_TOPIC:           Docker Compose v2
+CURRENT_SPRINT:         09                  (00 = not started)
+SPRINT_TOPIC:           Frontend Container
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -48,7 +48,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 06 | Container Networking | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-10 | Unlocked (10/10) |
 | 07 | Docker Compose v1 | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-11 | Unlocked (10/10) |
 | 08 | Docker Compose v2 | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-11 | Unlocked (7/10) |
-| 09 | Frontend Container | 🔨 | — | — | — | —/20 | — | — |
+| 09 | Frontend Container | 🔨 | 9 | 10 | 0 | 19/20 | 2026-04-13 | Unlocked |
 | 10 | Multi-Stage Builds | 🔨 | — | — | — | —/20 | — | — |
 | 11 | Health Checks & Restart | 🔨 | — | — | — | —/20 | — | — |
 | 12 | Act 1 Capstone | 🏁 | — | — | — | —/30 | — | — |
@@ -99,12 +99,12 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             8 sessions
-Longest Streak:             8 sessions
+Current Streak:             9 sessions
+Longest Streak:             9 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       19.1
+Average Sprint Score:       19.2
 Perfect Scores (20/20):     4
-Bonus Challenges Earned:    8
+Bonus Challenges Earned:    9
 Bonus Challenges Won:       7 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10)
 Deep Dives Completed:       0
 ```
@@ -114,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-11
-Sprint:              08 — Docker Compose v2
-What was built:      Extended compose file with worker service + health checks for all services. API waits for postgres/redis healthy. Worker waits for postgres/redis/API healthy (needs migrations). Four services with enforced dependency cascade.
-Key concept:         Health checks enable condition: service_healthy (wait for actual readiness, not just process start). Independently discovered worker depends on API for schema (migrations). Debugged health check false positive: pg_isready checks connectivity, psql checks authentication. Redis bound to 127.0.0.1 passes own health check but unreachable from other containers.
-What was missed:     Bonus challenge incomplete — diagnosed redis bind issue but didn't implement and verify the fix. Diagnosis without verification doesn't resolve incidents.
-Carry forward:       Health check parameters (test, interval, timeout, retries, start_period) map directly to Kubernetes liveness and readiness probes in Sprint 14. Same concepts, different YAML.
-Next session:        Sprint 09 — Frontend Container (containerize React UI, Nginx proxy)
+Date:                2026-04-13
+Sprint:              09 — Frontend Container
+What was built:      Dockerfile.frontend with npm build + Nginx serving. Frontend service in docker-compose.yml with build context, port 3001:3000, depends on API. Independently discovered dist/ files must be copied to /usr/share/nginx/html for Nginx to serve them.
+Key concept:         Network boundary — browser (host network) cannot directly reach containers (Docker internal network). Nginx bridges the gap: serves static files AND proxies /api/* to http://api:8000 using Docker DNS. Traced full request path: browser → Nginx (port 3001) → API (Docker DNS) → PostgreSQL → back. 343-byte JSON response visible in both Nginx logs and browser DevTools.
+What was missed:     Speed bonus lost due to app bugs (bcrypt library, seed script) fixed in Mode A. Conceptually: "static files can't be delivered" → meant "need a web server to serve via HTTP."
+Carry forward:       Browser → Nginx → API proxy pattern maps directly to Kubernetes Ingress → Service → Pod in Sprint 15. Different tools, same architecture.
+Next session:        Sprint 10 — Multi-Stage Builds (optimize image size, separate build from runtime)
 ```
 
 ---
