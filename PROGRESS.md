@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         09                  (00 = not started)
-SPRINT_TOPIC:           Frontend Container
+CURRENT_SPRINT:         10                  (00 = not started)
+SPRINT_TOPIC:           Multi-Stage Builds
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -49,7 +49,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 07 | Docker Compose v1 | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-11 | Unlocked (10/10) |
 | 08 | Docker Compose v2 | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-11 | Unlocked (7/10) |
 | 09 | Frontend Container | 🔨 | 9 | 10 | 0 | 19/20 | 2026-04-13 | Unlocked |
-| 10 | Multi-Stage Builds | 🔨 | — | — | — | —/20 | — | — |
+| 10 | Multi-Stage Builds | 🔨 | 8 | 9 | +1 | 18/20 | 2026-04-14 | Unlocked (10/10) |
 | 11 | Health Checks & Restart | 🔨 | — | — | — | —/20 | — | — |
 | 12 | Act 1 Capstone | 🏁 | — | — | — | —/30 | — | — |
 
@@ -99,13 +99,13 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             9 sessions
-Longest Streak:             9 sessions
+Current Streak:             10 sessions
+Longest Streak:             10 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       19.2
+Average Sprint Score:       19.1
 Perfect Scores (20/20):     4
-Bonus Challenges Earned:    9
-Bonus Challenges Won:       7 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10)
+Bonus Challenges Earned:    10
+Bonus Challenges Won:       8 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 10 — 10/10)
 Deep Dives Completed:       0
 ```
 
@@ -114,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-13
-Sprint:              09 — Frontend Container
-What was built:      Dockerfile.frontend with npm build + Nginx serving. Frontend service in docker-compose.yml with build context, port 3001:3000, depends on API. Independently discovered dist/ files must be copied to /usr/share/nginx/html for Nginx to serve them.
-Key concept:         Network boundary — browser (host network) cannot directly reach containers (Docker internal network). Nginx bridges the gap: serves static files AND proxies /api/* to http://api:8000 using Docker DNS. Traced full request path: browser → Nginx (port 3001) → API (Docker DNS) → PostgreSQL → back. 343-byte JSON response visible in both Nginx logs and browser DevTools.
-What was missed:     Speed bonus lost due to app bugs (bcrypt library, seed script) fixed in Mode A. Conceptually: "static files can't be delivered" → meant "need a web server to serve via HTTP."
-Carry forward:       Browser → Nginx → API proxy pattern maps directly to Kubernetes Ingress → Service → Pod in Sprint 15. Different tools, same architecture.
-Next session:        Sprint 10 — Multi-Stage Builds (optimize image size, separate build from runtime)
+Date:                2026-04-14
+Sprint:              10 — Multi-Stage Builds & Image Optimization
+What was built:      Multi-stage Dockerfile.frontend (node:18-alpine builder → nginx:alpine runtime) and Dockerfile.api (python:3.11 builder → python:3.11-slim runtime). Frontend: 338 MB → 53.8 MB (84% reduction). API: 279 MB → 268 MB (4% reduction). Both functional in Compose.
+Key concept:         Multi-stage builds separate build-time from runtime. Each FROM starts a fresh filesystem — only explicit COPY --from=builder brings files forward. Frontend won big (Node.js/npm discarded, only 5MB dist/ remains). API won small (pip/gcc discarded, but Python packages are runtime deps). Formula: savings = (build tools discarded) + (base image downgrade) - (runtime artifacts that must stay). Builder can be fat (python:3.11 with gcc), runtime must be lean (python:3.11-slim). Image size = security + cost + speed.
+What was missed:     Explanation assumed too much context. Said "build and runtime work separate" but didn't ground it in something a Docker beginner could visualize. Technically correct but not learnable without prior knowledge.
+Carry forward:       Builder base can be large (has gcc for C extensions) because it's discarded. Runtime base must be minimal. This is a security decision — smaller runtime = fewer CVEs. Sprint 11 adds vulnerability scanning; every package in runtime is attack surface.
+Next session:        Sprint 11 — Health Checks, Restart Policies & Graceful Shutdown (make Runmatic self-healing)
 ```
 
 ---
