@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         10                  (00 = not started)
-SPRINT_TOPIC:           Multi-Stage Builds
+CURRENT_SPRINT:         11                  (00 = not started)
+SPRINT_TOPIC:           Health Checks & Restart Policies
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -50,7 +50,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 08 | Docker Compose v2 | 🔨 | 9 | 10 | +1 | 20/20 | 2026-04-11 | Unlocked (7/10) |
 | 09 | Frontend Container | 🔨 | 9 | 10 | 0 | 19/20 | 2026-04-13 | Unlocked |
 | 10 | Multi-Stage Builds | 🔨 | 8 | 9 | +1 | 18/20 | 2026-04-14 | Unlocked (10/10) |
-| 11 | Health Checks & Restart | 🔨 | — | — | — | —/20 | — | — |
+| 11 | Health Checks & Restart | 🔨 | 8 | 10 | +1 | 19/20 | 2026-04-15 | Unlocked (9/10) |
 | 12 | Act 1 Capstone | 🏁 | — | — | — | —/30 | — | — |
 
 **Act 1 Status:** 🟢 UNLOCKED — Session 0A and 0B complete
@@ -99,13 +99,13 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             10 sessions
-Longest Streak:             10 sessions
+Current Streak:             11 sessions
+Longest Streak:             11 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       19.1
+Average Sprint Score:       19.0
 Perfect Scores (20/20):     4
-Bonus Challenges Earned:    10
-Bonus Challenges Won:       8 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 10 — 10/10)
+Bonus Challenges Earned:    11
+Bonus Challenges Completed: 11 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10)
 Deep Dives Completed:       0
 ```
 
@@ -114,13 +114,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-14
-Sprint:              10 — Multi-Stage Builds & Image Optimization
-What was built:      Multi-stage Dockerfile.frontend (node:18-alpine builder → nginx:alpine runtime) and Dockerfile.api (python:3.11 builder → python:3.11-slim runtime). Frontend: 338 MB → 53.8 MB (84% reduction). API: 279 MB → 268 MB (4% reduction). Both functional in Compose.
-Key concept:         Multi-stage builds separate build-time from runtime. Each FROM starts a fresh filesystem — only explicit COPY --from=builder brings files forward. Frontend won big (Node.js/npm discarded, only 5MB dist/ remains). API won small (pip/gcc discarded, but Python packages are runtime deps). Formula: savings = (build tools discarded) + (base image downgrade) - (runtime artifacts that must stay). Builder can be fat (python:3.11 with gcc), runtime must be lean (python:3.11-slim). Image size = security + cost + speed.
-What was missed:     Explanation assumed too much context. Said "build and runtime work separate" but didn't ground it in something a Docker beginner could visualize. Technically correct but not learnable without prior knowledge.
-Carry forward:       Builder base can be large (has gcc for C extensions) because it's discarded. Runtime base must be minimal. This is a security decision — smaller runtime = fewer CVEs. Sprint 11 adds vulnerability scanning; every package in runtime is attack surface.
-Next session:        Sprint 11 — Health Checks, Restart Policies & Graceful Shutdown (make Runmatic self-healing)
+Date:                2026-04-15
+Sprint:              11 — Health Checks & Restart Policies
+What was built:      docker-compose.yml with restart policies (unless-stopped on all 5 services), stop_grace_period (30s for postgres and worker), and API health check (curl /health every 10s). Tested automatic restart on crash (kill PID 1 inside container → RestartCount = 1), graceful shutdown (docker compose stop → exit code 0), and health check transitions (starting → healthy after 10s).
+Key concept:         Restart policies encode operational intent. unless-stopped = "fix crashes automatically, but respect manual stops for maintenance". docker compose kill (manual) doesn't trigger restart — correct behavior. kill 1 inside container (real crash) does trigger restart. Health checks are observability signals (alert human), not remediation triggers (don't auto-restart unhealthy). Compose has one instance — restarting unhealthy = downtime. K8s has replicas — safe to restart one unhealthy pod. Same health check, different remediation based on architecture.
+What was missed:     Explanation clarity: opening sentence "if a container crashes docker does not restart it" contradicted the rest. Meant "by default without a policy" but didn't state it explicitly. Rest was solid — unless-stopped vs always for maintenance, manual stop vs crash distinction.
+Carry forward:       Exec form CMD matters for signal handling. Shell form wraps process in /bin/sh (PID 1), which doesn't forward SIGTERM to actual process (PID 7). Exec form makes your process PID 1, so it receives signals directly. This is why API shut down gracefully and why worker bonus challenge broke (shell form prevented job execution signals from reaching Python). Sprint 12 will walk through full dependency chain including signal handling.
+Next session:        Sprint 12 — Act 1 Capstone (prove Docker mastery, 24+/30 unlocks Act 2: Kubernetes)
 ```
 
 ---

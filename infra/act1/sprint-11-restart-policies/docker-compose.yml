@@ -1,0 +1,84 @@
+services:
+ postgres:
+  image: postgres:15-alpine
+  container_name: postgres1
+  restart: unless-stopped
+  stop_grace_period: 30s
+  environment:
+   POSTGRES_DB: runmatic
+   POSTGRES_USER: runmatic
+   POSTGRES_PASSWORD: devpassword
+  volumes:
+   - postgres-data:/var/lib/postgresql/data
+  healthcheck:
+   test: ["CMD-SHELL", "psql -U runmatic -d runmatic -c 'SELECT 1' || exit 1"]
+   interval: 5s
+   timeout: 3s
+   retries: 5
+   start_period: 30s
+ 
+ redis:
+  image: redis:7-alpine
+  container_name: redis1
+  restart: unless-stopped
+  healthcheck:
+   test: ["CMD", "redis-cli", "ping"]
+   interval: 5s
+   timeout: 3s
+   retries: 5
+
+
+ api:
+  image: runmatic-api-v2
+  container_name: api1
+  restart: unless-stopped
+  ports:
+   - "8000:8000"
+  environment:
+   DATABASE_URL: postgresql+asyncpg://runmatic:devpassword@postgres:5432/runmatic
+   REDIS_URL: redis://redis:6379/0
+   SECRET_KEY: dev-secret-key
+  healthcheck:
+   test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+   interval: 10s
+   timeout: 5s
+   retries: 3
+   start_period: 10s
+  depends_on:
+   postgres:
+    condition: service_healthy
+   redis:
+    condition: service_healthy 
+ 
+ worker:
+  image: runmatic-worker-v1
+  container_name: worker1
+  restart: unless-stopped
+  stop_grace_period: 30s
+  environment:
+   DATABASE_URL: postgresql+asyncpg://runmatic:devpassword@postgres:5432/runmatic
+   REDIS_URL: redis://redis:6379/0
+  depends_on:
+   postgres:
+    condition: service_healthy
+   redis:
+    condition: service_healthy
+   api:
+    condition: service_healthy
+
+ frontend:
+  build:
+   context: ../../../app/frontend
+   dockerfile: ../../infra/act1/sprint-10-multistage/Dockerfile.frontend
+  container_name: frontend1
+  restart: unless-stopped
+  ports:
+   - "3001:3000"
+  depends_on:
+   api:
+    condition: service_healthy
+
+
+
+volumes:
+ postgres-data:
