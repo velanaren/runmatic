@@ -9,9 +9,9 @@
 
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
-CURRENT_ACT:            1                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         11                  (00 = not started)
-SPRINT_TOPIC:           Health Checks & Restart Policies
+CURRENT_ACT:            2                   (1=Docker | 2=Kubernetes | 3=Platform)
+CURRENT_SPRINT:         12                  (00 = not started)
+SPRINT_TOPIC:           Act 1 Capstone Complete
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -51,10 +51,10 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 09 | Frontend Container | 🔨 | 9 | 10 | 0 | 19/20 | 2026-04-13 | Unlocked |
 | 10 | Multi-Stage Builds | 🔨 | 8 | 9 | +1 | 18/20 | 2026-04-14 | Unlocked (10/10) |
 | 11 | Health Checks & Restart | 🔨 | 8 | 10 | +1 | 19/20 | 2026-04-15 | Unlocked (9/10) |
-| 12 | Act 1 Capstone | 🏁 | — | — | — | —/30 | — | — |
+| 12 | Act 1 Capstone | 🏁 | — | — | — | 29/30 | 2026-04-18 | — |
 
-**Act 1 Status:** 🟢 UNLOCKED — Session 0A and 0B complete
-**Act 1 Unlock:** Score 24+/30 on Sprint 12 Capstone
+**Act 1 Status:** ✅ COMPLETE — Docker Mastery Proven (29/30)
+**Act 2 Status:** 🔓 UNLOCKED — Kubernetes (Sprint 13-20)
 
 ---
 
@@ -99,11 +99,12 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             11 sessions
-Longest Streak:             11 sessions
+Current Streak:             12 sessions
+Longest Streak:             12 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       19.0
+Average Sprint Score:       19.1
 Perfect Scores (20/20):     4
+Capstone Scores:            29/30 (Act 1)
 Bonus Challenges Earned:    11
 Bonus Challenges Completed: 11 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10)
 Deep Dives Completed:       0
@@ -114,13 +115,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-15
-Sprint:              11 — Health Checks & Restart Policies
-What was built:      docker-compose.yml with restart policies (unless-stopped on all 5 services), stop_grace_period (30s for postgres and worker), and API health check (curl /health every 10s). Tested automatic restart on crash (kill PID 1 inside container → RestartCount = 1), graceful shutdown (docker compose stop → exit code 0), and health check transitions (starting → healthy after 10s).
-Key concept:         Restart policies encode operational intent. unless-stopped = "fix crashes automatically, but respect manual stops for maintenance". docker compose kill (manual) doesn't trigger restart — correct behavior. kill 1 inside container (real crash) does trigger restart. Health checks are observability signals (alert human), not remediation triggers (don't auto-restart unhealthy). Compose has one instance — restarting unhealthy = downtime. K8s has replicas — safe to restart one unhealthy pod. Same health check, different remediation based on architecture.
-What was missed:     Explanation clarity: opening sentence "if a container crashes docker does not restart it" contradicted the rest. Meant "by default without a policy" but didn't state it explicitly. Rest was solid — unless-stopped vs always for maintenance, manual stop vs crash distinction.
-Carry forward:       Exec form CMD matters for signal handling. Shell form wraps process in /bin/sh (PID 1), which doesn't forward SIGTERM to actual process (PID 7). Exec form makes your process PID 1, so it receives signals directly. This is why API shut down gracefully and why worker bonus challenge broke (shell form prevented job execution signals from reaching Python). Sprint 12 will walk through full dependency chain including signal handling.
-Next session:        Sprint 12 — Act 1 Capstone (prove Docker mastery, 24+/30 unlocks Act 2: Kubernetes)
+Date:                2026-04-18
+Sprint:              12 — Act 1 Capstone
+What was built:      Nothing new — this was a proof of mastery session. Demonstrated: all 5 services start healthy, created runbook via UI, persistence verified (compose down/up), restart policy tested correctly (kill 1 inside container), health check transitions observed. Explained full architecture: network topology (compose creates default network, services resolve via DNS), volume strategy (container lifecycle separated from data lifecycle — postgres persists, redis ephemeral), Dockerfile layer ordering (stable on top, changing on bottom for cache efficiency), startup dependency chain (postgres+redis → api → frontend+worker, all enforced by health checks).
+Key concept:         Capstone assessment across three dimensions: (1) Operational proof — can the system run end-to-end? (2) Architecture explanation — can you teach it to a new SRE? (3) Documentation quality — is the audit trail complete? All three passed. Act 1 complete: Docker is no longer a black box. You can containerize, orchestrate, optimize, and debug production Docker infrastructure.
+What was missed:     Network explanation could have named the specific network (sprint-11-restart-policies_default). Layer ordering explanation had minor wording confusion ("below" instead of "after") but concept was correct.
+Carry forward:       Act 2 mindset shift: Docker Compose = "run these containers on this machine." Kubernetes = "maintain this desired state across a cluster, forever, even when things fail." Same app, radically different substrate. You're not running containers — you're declaring intentions and letting the control plane reconcile reality to match.
+Next session:        Sprint 13 — Kubernetes Mental Model (control plane architecture, nodes, pods — understanding K8s before writing YAML)
 ```
 
 ---
@@ -135,7 +136,7 @@ Next session:        Sprint 12 — Act 1 Capstone (prove Docker mastery, 24+/30 
 ## Act Completion Record
 
 ```
-Act 1 — Docker:       ⬜ NOT STARTED    Unlock: Sprint 12 capstone 24+/30
-Act 2 — Kubernetes:   🔒 LOCKED         Unlock: Sprint 20 capstone 24+/30
+Act 1 — Docker:       ✅ COMPLETE       Score: 29/30 (2026-04-18)
+Act 2 — Kubernetes:   🔓 UNLOCKED       Unlock: Sprint 20 capstone 24+/30
 Act 3 — Platform:     🔒 LOCKED         Unlock: Sprint 32 capstone 40+/50
 ```

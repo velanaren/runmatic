@@ -64,13 +64,13 @@ A recruiter reading this understands the arc: where you started, where you are, 
 ---
 
 ### Act 1 Complete — Docker Mastery
-**Date:** [YYYY-MM-DD]
-**Capstone score:** [XX]/30
-**Act 1 stats:** [X] sprints | Average score: [X.X]/20 | Bonus challenges: [X] won / [X] attempted | Streaks: longest [X] sessions
-**What Runmatic can do:** `docker compose up` → 5 services start, all healthy. Data persists across restarts. Services self-heal.
-**Weakest sprint:** [Sprint XX — topic] — [brief note on what the gap was]
-**Strongest sprint:** [Sprint XX — topic] — [brief note on why it clicked]
-**Key thing learned from Act 1:** [One paragraph — the most important thing Docker taught you]
+**Date:** 2026-04-18
+**Capstone score:** 29/30
+**Act 1 stats:** 11 sprints | Average score: 19.1/20 | Bonus challenges: 11 won / 11 attempted | Streak: 12 sessions
+**What Runmatic can do:** `docker compose up` → 5 services start, all healthy (API, worker, frontend, postgres, redis). Data persists across restarts. Services self-heal with restart policies. Multi-stage builds reduce image sizes by 50-60%. Health checks enforce startup dependencies.
+**Weakest sprint:** Sprint 01 — Containers & Mental Model (17/20) — First sprint learning Docker fundamentals, minor confusion distinguishing containers from images
+**Strongest sprint:** Multiple 20/20s — Sprints 05 (Volumes), 06 (Networking), 07 (Compose v1), 08 (Compose v2) — Concepts clicked, execution flawless, completed under 35 minutes
+**Key thing learned from Act 1:** Container lifecycle must be separated from data lifecycle. Containers are ephemeral and disposable — you can delete them, recreate them, restart them without worry. But data isn't. Business operations depend on persistent state surviving container restarts. That distinction — knowing what to persist (postgres runbooks) and what to leave ephemeral (redis sessions) — is what makes infrastructure production-ready, not just functional. Every restart policy, every volume mount, every health check encodes operational intent: "this is how the system should behave when things fail." Docker taught me that infrastructure isn't code that runs — it's systems that recover.
 
 ---
 
