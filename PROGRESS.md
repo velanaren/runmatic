@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            2                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         12                  (00 = not started)
-SPRINT_TOPIC:           Act 1 Capstone Complete
+CURRENT_SPRINT:         13                  (00 = not started)
+SPRINT_TOPIC:           Kubernetes Mental Model
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -54,7 +54,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 12 | Act 1 Capstone | 🏁 | — | — | — | 29/30 | 2026-04-18 | — |
 
 **Act 1 Status:** ✅ COMPLETE — Docker Mastery Proven (29/30)
-**Act 2 Status:** 🔓 UNLOCKED — Kubernetes (Sprint 13-20)
+**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 13 complete
 
 ---
 
@@ -62,7 +62,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 
 | Sprint | Topic | Type | Concept | Execution | Speed | Total | Date | Bonus |
 |--------|-------|------|---------|-----------|-------|-------|------|-------|
-| 13 | K8s Mental Model | 🔭 | — | — | — | —/20 | — | — |
+| 13 | K8s Mental Model | 🔭 | 9 | 9 | +1 | 19/20 | 2026-04-22 | 10/10 |
 | 14 | Pods & Deployments | 🔨 | — | — | — | —/20 | — | — |
 | 15 | Services & DNS | 🔨 | — | — | — | —/20 | — | — |
 | 16 | ConfigMaps & Secrets | 🔨 | — | — | — | —/20 | — | — |
@@ -99,14 +99,14 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             12 sessions
-Longest Streak:             12 sessions
+Current Streak:             13 sessions
+Longest Streak:             13 sessions
 Best Sprint Score:          20/20
 Average Sprint Score:       19.1
 Perfect Scores (20/20):     4
 Capstone Scores:            29/30 (Act 1)
 Bonus Challenges Earned:    11
-Bonus Challenges Completed: 11 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10)
+Bonus Challenges Completed: 12 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10)
 Deep Dives Completed:       0
 ```
 
@@ -115,13 +115,13 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-18
-Sprint:              12 — Act 1 Capstone
-What was built:      Nothing new — this was a proof of mastery session. Demonstrated: all 5 services start healthy, created runbook via UI, persistence verified (compose down/up), restart policy tested correctly (kill 1 inside container), health check transitions observed. Explained full architecture: network topology (compose creates default network, services resolve via DNS), volume strategy (container lifecycle separated from data lifecycle — postgres persists, redis ephemeral), Dockerfile layer ordering (stable on top, changing on bottom for cache efficiency), startup dependency chain (postgres+redis → api → frontend+worker, all enforced by health checks).
-Key concept:         Capstone assessment across three dimensions: (1) Operational proof — can the system run end-to-end? (2) Architecture explanation — can you teach it to a new SRE? (3) Documentation quality — is the audit trail complete? All three passed. Act 1 complete: Docker is no longer a black box. You can containerize, orchestrate, optimize, and debug production Docker infrastructure.
-What was missed:     Network explanation could have named the specific network (sprint-11-restart-policies_default). Layer ordering explanation had minor wording confusion ("below" instead of "after") but concept was correct.
-Carry forward:       Act 2 mindset shift: Docker Compose = "run these containers on this machine." Kubernetes = "maintain this desired state across a cluster, forever, even when things fail." Same app, radically different substrate. You're not running containers — you're declaring intentions and letting the control plane reconcile reality to match.
-Next session:        Sprint 13 — Kubernetes Mental Model (control plane architecture, nodes, pods — understanding K8s before writing YAML)
+Date:                2026-04-22
+Sprint:              13 — Kubernetes Mental Model
+What was built:      No infra file (conceptual sprint). Inspected control plane components in kube-system namespace, traced the Deployment → ReplicaSet → Pod ownership chain via ownerReferences in YAML, observed the reconciliation loop live (pod deleted from deployment = immediately replaced). Bonus: simulated a finalizer scenario from scratch — applied a custom finalizer, reproduced the stuck pod, fixed by nullifying via patch.
+Key concept:         The reconciliation loop: observe actual state → compare to desired state → act on the diff, continuously. K8s doesn't restart things — it runs a continuous correction loop. A pod dying is a normal event; the real incidents are when the controller can't converge (image pull failing, no capacity, health check never passing).
+What was missed:     Named control plane components didn't appear in the Phase 4 verbal explanation — analogy was strong but named components (kube-controller-manager, etcd) strengthen interview answers. Didn't use kubectl get pods -w during delete to observe replacement in real time.
+Carry forward:       Labels and selectors are the connective tissue of K8s. A Deployment doesn't track pods by name — it tracks by label. selector in Deployment must match labels in pod template. Get it wrong and you get orphaned pods. Write the selector first in Sprint 14, then match labels to it.
+Next session:        Sprint 14 — Pods & Deployments (writing first real K8s manifest for Runmatic API)
 ```
 
 ---
