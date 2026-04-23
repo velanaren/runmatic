@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            2                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         13                  (00 = not started)
-SPRINT_TOPIC:           Kubernetes Mental Model
+CURRENT_SPRINT:         15                  (00 = not started)
+SPRINT_TOPIC:           Services & DNS
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -54,7 +54,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 12 | Act 1 Capstone | 🏁 | — | — | — | 29/30 | 2026-04-18 | — |
 
 **Act 1 Status:** ✅ COMPLETE — Docker Mastery Proven (29/30)
-**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 13 complete
+**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 14 complete
 
 ---
 
@@ -63,7 +63,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | Sprint | Topic | Type | Concept | Execution | Speed | Total | Date | Bonus |
 |--------|-------|------|---------|-----------|-------|-------|------|-------|
 | 13 | K8s Mental Model | 🔭 | 9 | 9 | +1 | 19/20 | 2026-04-22 | 10/10 |
-| 14 | Pods & Deployments | 🔨 | — | — | — | —/20 | — | — |
+| 14 | Pods & Deployments | 🔨 | 9 | 9 | +0 | 18/20 | 2026-04-23 | Unlocked |
 | 15 | Services & DNS | 🔨 | — | — | — | —/20 | — | — |
 | 16 | ConfigMaps & Secrets | 🔨 | — | — | — | —/20 | — | — |
 | 17 | Persistent Volumes | 🔨 | — | — | — | —/20 | — | — |
@@ -99,14 +99,14 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             13 sessions
-Longest Streak:             13 sessions
+Current Streak:             14 sessions
+Longest Streak:             14 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       19.1
+Average Sprint Score:       19.0
 Perfect Scores (20/20):     4
 Capstone Scores:            29/30 (Act 1)
-Bonus Challenges Earned:    11
-Bonus Challenges Completed: 12 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10)
+Bonus Challenges Earned:    12
+Bonus Challenges Completed: 13 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10, Sprint 14 — 10/10)
 Deep Dives Completed:       0
 ```
 
@@ -115,13 +115,21 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-22
-Sprint:              13 — Kubernetes Mental Model
-What was built:      No infra file (conceptual sprint). Inspected control plane components in kube-system namespace, traced the Deployment → ReplicaSet → Pod ownership chain via ownerReferences in YAML, observed the reconciliation loop live (pod deleted from deployment = immediately replaced). Bonus: simulated a finalizer scenario from scratch — applied a custom finalizer, reproduced the stuck pod, fixed by nullifying via patch.
-Key concept:         The reconciliation loop: observe actual state → compare to desired state → act on the diff, continuously. K8s doesn't restart things — it runs a continuous correction loop. A pod dying is a normal event; the real incidents are when the controller can't converge (image pull failing, no capacity, health check never passing).
-What was missed:     Named control plane components didn't appear in the Phase 4 verbal explanation — analogy was strong but named components (kube-controller-manager, etcd) strengthen interview answers. Didn't use kubectl get pods -w during delete to observe replacement in real time.
-Carry forward:       Labels and selectors are the connective tissue of K8s. A Deployment doesn't track pods by name — it tracks by label. selector in Deployment must match labels in pod template. Get it wrong and you get orphaned pods. Write the selector first in Sprint 14, then match labels to it.
-Next session:        Sprint 14 — Pods & Deployments (writing first real K8s manifest for Runmatic API)
+Date:                2026-04-23
+Sprint:              14 — Pods & Deployments
+What was built:      api-deployment.yaml — 2 replica Runmatic API Deployment with resource requests/limits.
+                     Proved reconciliation loop (pod deleted → replaced in 7s). Triggered a deliberate
+                     rolling update to a non-existent image, observed ErrImageNeverPull, waited for
+                     progressDeadlineExceeded (600s), rolled back with kubectl rollout undo.
+Key concept:         Deployment → ReplicaSet → Pod. The Deployment manages ReplicaSets, not pods directly.
+                     rollout undo works by scaling the old ReplicaSet back up — it was dormant, not gone.
+                     progressDeadlineExceeded marks the Deployment degraded but does NOT auto-rollback.
+What was missed:     Phase 4 explanation didn't name ReplicaSet as the intermediate layer. No readiness or
+                     liveness probes in the manifest — pods show Ready based on process running, not app health.
+Carry forward:       DATABASE_URL points to postgres:5432 — that hostname doesn't exist in K8s yet.
+                     Sprint 15 creates a ClusterIP Service for postgres, registering the DNS name the API
+                     needs to connect to the database.
+Next session:        Sprint 15 — Services & DNS (stable endpoints and inter-service DNS for Runmatic)
 ```
 
 ---
