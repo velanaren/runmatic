@@ -10,8 +10,8 @@
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
 CURRENT_ACT:            2                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         15                  (00 = not started)
-SPRINT_TOPIC:           Services & DNS
+CURRENT_SPRINT:         16                  (00 = not started)
+SPRINT_TOPIC:           ConfigMaps & Secrets
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -54,7 +54,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 12 | Act 1 Capstone | 🏁 | — | — | — | 29/30 | 2026-04-18 | — |
 
 **Act 1 Status:** ✅ COMPLETE — Docker Mastery Proven (29/30)
-**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 14 complete
+**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 15 complete
 
 ---
 
@@ -64,7 +64,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 |--------|-------|------|---------|-----------|-------|-------|------|-------|
 | 13 | K8s Mental Model | 🔭 | 9 | 9 | +1 | 19/20 | 2026-04-22 | 10/10 |
 | 14 | Pods & Deployments | 🔨 | 9 | 9 | +0 | 18/20 | 2026-04-23 | Unlocked |
-| 15 | Services & DNS | 🔨 | — | — | — | —/20 | — | — |
+| 15 | Services & DNS | 🔨 | 9 | 9 | +1 | 19/20 | 2026-04-26 | 10/10 |
 | 16 | ConfigMaps & Secrets | 🔨 | — | — | — | —/20 | — | — |
 | 17 | Persistent Volumes | 🔨 | — | — | — | —/20 | — | — |
 | 18 | Ingress | 🔨 | — | — | — | —/20 | — | — |
@@ -99,14 +99,14 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             14 sessions
-Longest Streak:             14 sessions
+Current Streak:             15 sessions
+Longest Streak:             15 sessions
 Best Sprint Score:          20/20
 Average Sprint Score:       19.0
 Perfect Scores (20/20):     4
 Capstone Scores:            29/30 (Act 1)
-Bonus Challenges Earned:    12
-Bonus Challenges Completed: 13 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10, Sprint 14 — 10/10)
+Bonus Challenges Earned:    13
+Bonus Challenges Completed: 14 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10, Sprint 14 — 10/10, Sprint 15 — 10/10)
 Deep Dives Completed:       0
 ```
 
@@ -115,21 +115,21 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-23
-Sprint:              14 — Pods & Deployments
-What was built:      api-deployment.yaml — 2 replica Runmatic API Deployment with resource requests/limits.
-                     Proved reconciliation loop (pod deleted → replaced in 7s). Triggered a deliberate
-                     rolling update to a non-existent image, observed ErrImageNeverPull, waited for
-                     progressDeadlineExceeded (600s), rolled back with kubectl rollout undo.
-Key concept:         Deployment → ReplicaSet → Pod. The Deployment manages ReplicaSets, not pods directly.
-                     rollout undo works by scaling the old ReplicaSet back up — it was dormant, not gone.
-                     progressDeadlineExceeded marks the Deployment degraded but does NOT auto-rollback.
-What was missed:     Phase 4 explanation didn't name ReplicaSet as the intermediate layer. No readiness or
-                     liveness probes in the manifest — pods show Ready based on process running, not app health.
-Carry forward:       DATABASE_URL points to postgres:5432 — that hostname doesn't exist in K8s yet.
-                     Sprint 15 creates a ClusterIP Service for postgres, registering the DNS name the API
-                     needs to connect to the database.
-Next session:        Sprint 15 — Services & DNS (stable endpoints and inter-service DNS for Runmatic)
+Date:                2026-04-26
+Sprint:              15 — Services & DNS
+What was built:      postgres-deployment.yaml, postgres-service.yaml (ClusterIP), api-service.yaml (NodePort).
+                     API now reaches postgres via DNS name postgres-service. Both endpoints show real pod IPs.
+                     Bonus: injected a fake-postgres pod with matching labels, proved Service load-balances
+                     to it with no readiness gate — then identified readiness probes as the fix.
+Key concept:         Service selector matches pod labels (not Deployment name). DNS resolves service-name →
+                     ClusterIP → pod IP via kube-proxy. Without readiness probes any Running pod enters
+                     the endpoint rotation regardless of whether it can actually serve traffic.
+What was missed:     DNS resolves to ClusterIP (virtual IP), not directly to pod IP. kube-proxy handles
+                     the final hop from ClusterIP to pod. Minor but important distinction.
+Carry forward:       DATABASE_URL is still hardcoded as an env var in the Deployment YAML — visible to
+                     anyone with kubectl access. Sprint 16 moves all config into ConfigMaps (safe values)
+                     and Secrets (passwords). postgres-service is the hostname that goes into that config.
+Next session:        Sprint 16 — ConfigMaps & Secrets (K8s-native config objects, no hardcoded values in YAML)
 ```
 
 ---

@@ -22,13 +22,13 @@ The application was generated with AI to production standards. The infrastructur
 | | |
 |--|--|
 | **Current Act** | Act 2 — Kubernetes |
-| **Sprints Completed** | 14 / 32 |
+| **Sprints Completed** | 15 / 32 |
 | **Average Score** | 19.0 / 20 |
 | **Best Sprint** | 20/20 (Sprints 05, 06, 07, 08) |
-| **Current Streak** | 14 🔥 |
-| **Bonus Challenges** | 13 / 13 completed |
+| **Current Streak** | 15 🔥 |
+| **Bonus Challenges** | 14 / 14 completed |
 | **Act 1 Status** | ✅ COMPLETE — 29/30 capstone (2026-04-18) |
-| **Act 2 Status** | 🔓 IN PROGRESS — Sprint 15 next |
+| **Act 2 Status** | 🔓 IN PROGRESS — Sprint 16 next |
 | **Act 3 Status** | 🔒 Locked |
 
 ### Sprint Log
@@ -49,6 +49,7 @@ The application was generated with AI to production standards. The infrastructur
 | 12 | **🏁 Act 1 Capstone — Docker Mastery** | **29/30** | — | **2026-04-18** |
 | 13 | Kubernetes Mental Model | 19/20 | 10/10 | 2026-04-22 |
 | 14 | Pods & Deployments | 18/20 | 10/10 | 2026-04-23 |
+| 15 | Services & DNS | 19/20 | 10/10 | 2026-04-26 |
 
 *Updated after every sprint commit.*
 

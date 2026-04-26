@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runmatic-api
+  namespace: default
+  labels:
+    app: runmatic
+    component: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: runmatic-api
+  template:
+    metadata:
+      labels:
+        app: runmatic-api
+    spec:
+      containers:
+        - name: api
+          image: runmatic-api-v2:latest
+          imagePullPolicy: Never   # use local image, don't try Docker Hub
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: postgresql+asyncpg://runmatic:devpassword@postgres-service:5432/runmatic
+            - name: REDIS_URL
+              value: redis://redis:6379/0
+            - name: SECRET_KEY
+              value: dev-secret-key
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi

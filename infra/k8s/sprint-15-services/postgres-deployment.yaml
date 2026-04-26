@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runmatic-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: runmatic-postgres
+  template:
+    metadata:
+      labels:
+        app: runmatic-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: runmatic
+            - name: POSTGRES_USER
+              value: runmatic
+            - name: POSTGRES_PASSWORD
+              value: devpassword
