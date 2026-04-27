@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+ name: runmatic-config
+ namespace: default 
+data:
+ REDIS_URL: redis://rediss:6379/0
+ LOG_LEVEL: info
+ POSTGRES_DB: runmatic
+ POSTGRES_USER: runmatic
+ 
