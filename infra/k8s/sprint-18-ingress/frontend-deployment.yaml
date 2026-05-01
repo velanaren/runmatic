@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment                                                                                                          
+metadata:       
+  name: runmatic-frontend
+  namespace: default     
+spec:               
+  replicas: 1                                                                                                             
+  selector:  
+    matchLabels:                                                                                                          
+      app: runmatic-frontend
+  template:                 
+    metadata:
+      labels:
+        app: runmatic-frontend
+    spec:                     
+      containers:
+        - name: frontend
+          image: runmatic-frontend:latest
+          imagePullPolicy: Never
+          ports:                                                                                                          
+            - containerPort: 3000                                                                                         
+          resources:                                                                                                      
+            requests:                                                                                                     
+              cpu: "100m"
+              memory: "64Mi"

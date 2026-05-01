@@ -67,11 +67,11 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 15 | Services & DNS | 🔨 | 9 | 9 | +1 | 19/20 | 2026-04-26 | 10/10 |
 | 16 | ConfigMaps & Secrets | 🔨 | 8 | 9 | +1 | 18/20 | 2026-04-27 | 10/10 |
 | 17 | Persistent Volumes | 🔨 | 7 | 9 | +1 | 17/20 | 2026-04-29 | Unlocked |
-| 18 | Ingress | 🔨 | — | — | — | —/20 | — | — |
+| 18 | Ingress | 🔨 | 9 | 8 | +0 | 17/20 | 2026-05-01 | Unlocked |
 | 19 | Horizontal Pod Autoscaler | 🔨 | — | — | — | —/20 | — | — |
 | 20 | Act 2 Capstone | 🏁 | — | — | — | —/30 | — | — |
 
-**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 17 complete
+**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 18 complete
 
 ---
 
@@ -99,14 +99,14 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             17 sessions
-Longest Streak:             17 sessions
+Current Streak:             18 sessions
+Longest Streak:             18 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       18.8
+Average Sprint Score:       18.7
 Perfect Scores (20/20):     4
 Capstone Scores:            29/30 (Act 1)
-Bonus Challenges Earned:    14
-Bonus Challenges Completed: 16 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10, Sprint 14 — 10/10, Sprint 15 — 10/10, Sprint 16 — 10/10, Sprint 17 — 7/10)
+Bonus Challenges Earned:    15
+Bonus Challenges Completed: 17 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10, Sprint 14 — 10/10, Sprint 15 — 10/10, Sprint 16 — 10/10, Sprint 17 — 7/10, Sprint 18 — 8/10)
 Deep Dives Completed:       0
 ```
 
@@ -115,24 +115,27 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-04-29
-Sprint:              17 — Persistent Volumes & PVCs
-What was built:      postgres-statefulset.yaml — headless Service (clusterIP: None) + StatefulSet with
-                     volumeClaimTemplates (1Gi, hostpath, ReadWriteOnce). Replaced postgres Deployment.
-                     Proved data survival: INSERT → delete pod → pod recreated as postgres-0 → SELECT
-                     returns same row. Phase 3: scaled to 3 replicas, observed PVC-per-pod creation,
-                     scaled back to 1, confirmed orphaned PVCs remain, scaled up again, confirmed
-                     same PVCs reattached to same pod names by naming convention.
-Key concept:         PV = actual storage. PVC = request for storage. StatefulSet identity binding:
-                     postgres-0 always reattaches to postgres-data-postgres-0 by naming convention.
-                     PVC lifecycle is decoupled from pod lifecycle — PVCs survive pod deletion by design.
-                     Orphaned PVCs must be manually cleaned up; they accumulate storage cost silently.
-What was missed:     Verbal explanation covered PV/PVC split and matching but omitted: (1) lifecycle
-                     decoupling — PVC survives pod deletion; (2) StatefulSet identity binding —
-                     same pod always gets same PVC, not just any matching one.
-Carry forward:       StatefulSet identity binding. In Sprint 20 Capstone: why is postgres a StatefulSet
-                     and the API a Deployment? Answer is storage identity — same pod, same PVC, always.
-Next session:        Sprint 18 — Ingress (expose Runmatic at runmatic.local via Ingress controller)
+Date:                2026-05-01
+Sprint:              18 — Ingress
+What was built:      frontend-deployment.yaml + frontend-service.yaml (first K8s frontend deployment).
+                     ingress.yaml — nginx Ingress with two path rules: /api → api-service:8000,
+                     / → frontend-service:3000. Runmatic UI live at runmatic.local in browser.
+                     Phase 3: diagnosed path-rewrite gap (/v2/api/runbooks → 404 from FastAPI),
+                     fixed with rewrite-target: /api/$2, regex capture group (/|$)(.*),
+                     ImplementationSpecific pathType, use-regex: true. Verified with real API data.
+                     Side fixes: nginx.conf resolver trick (deferred DNS resolution), Redis deployed,
+                     ConfigMap REDIS_URL typo fixed, DB migrations run.
+Key concept:         Ingress = one cluster entry point. Ingress resource = routing rules (YAML).
+                     Ingress controller = running Nginx pod that reads and enforces those rules.
+                     Paths pass through UNCHANGED by default — rewrite-target only needed when backend
+                     doesn't match the incoming path. Controller watches K8s API continuously and
+                     reconciles routing config automatically on every ingress.yaml change.
+What was missed:     Controller reconciliation loop — it watches K8s API continuously, not just at
+                     startup. rewrite-target annotation scope — applies to ALL paths in the Ingress
+                     object, not just the one with the regex.
+Carry forward:       Ingress passes paths unchanged by default. Know when to rewrite vs let through.
+                     Sprint 20 Capstone: decide explicitly for each path — rewrite needed or not?
+Next session:        Sprint 19 — Horizontal Pod Autoscaler (worker scales under load)
 ```
 
 ---
