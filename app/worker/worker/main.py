@@ -27,16 +27,6 @@ logger = logging.getLogger(__name__)
 _shutdown_requested = False
 
 
-def _handle_sigterm(signum: int, frame) -> None:
-    global _shutdown_requested
-    logger.info("SIGTERM received — requesting graceful shutdown")
-    _shutdown_requested = True
-
-
-signal.signal(signal.SIGTERM, _handle_sigterm)
-signal.signal(signal.SIGINT, _handle_sigterm)
-
-
 def start_scheduler() -> BackgroundScheduler:
     scheduler = BackgroundScheduler(timezone="UTC")
 
@@ -70,26 +60,21 @@ def start_scheduler() -> BackgroundScheduler:
     return scheduler
 
 
-def start_rq_worker(redis_conn: redis.Redis) -> threading.Thread:
-    """Start rq worker in a background thread."""
-    queues = [
-        Queue("default", connection=redis_conn),
-        Queue("notifications", connection=redis_conn),
-    ]
-
-    def _run_worker():
-        worker = Worker(queues, connection=redis_conn)
-        worker.work(with_scheduler=False, burst=False)
-
-    thread = threading.Thread(target=_run_worker, daemon=True, name="rq-worker")
-    thread.start()
-    logger.info("rq worker started", extra={"queues": ["default", "notifications"]})
-    return thread
-
-
 def set_heartbeat(redis_conn: redis.Redis) -> None:
     """Set a Redis heartbeat key so healthcheck.py can verify the worker is alive."""
     redis_conn.setex("worker:heartbeat", 120, "alive")
+
+
+def start_heartbeat(redis_conn: redis.Redis) -> threading.Thread:
+    """Run heartbeat in a background thread so rq can own the main thread."""
+    def _run():
+        while not _shutdown_requested:
+            set_heartbeat(redis_conn)
+            time.sleep(60)
+
+    thread = threading.Thread(target=_run, daemon=True, name="heartbeat")
+    thread.start()
+    return thread
 
 
 def main() -> None:
@@ -108,7 +93,7 @@ def main() -> None:
         sys.exit(1)
 
     scheduler = start_scheduler()
-    rq_thread = start_rq_worker(redis_conn)
+    start_heartbeat(redis_conn)
 
     # Run staleness check immediately on startup
     try:
@@ -118,14 +103,17 @@ def main() -> None:
 
     logger.info("Worker is running — waiting for jobs")
 
-    while not _shutdown_requested:
-        set_heartbeat(redis_conn)
-        time.sleep(60)
+    # rq must run in the main thread — signal handlers cannot be installed from a background thread
+    queues = [
+        Queue("default", connection=redis_conn),
+        Queue("notifications", connection=redis_conn),
+    ]
+    worker = Worker(queues, connection=redis_conn)
+    worker.work(with_scheduler=False, burst=False)
 
-    logger.info("Shutdown requested — stopping scheduler")
+    logger.info("rq worker stopped — shutting down scheduler")
     scheduler.shutdown(wait=True)
     logger.info("Worker shutdown complete")
-    sys.exit(0)
 
 
 if __name__ == "__main__":

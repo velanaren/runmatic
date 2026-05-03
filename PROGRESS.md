@@ -68,10 +68,10 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 16 | ConfigMaps & Secrets | 🔨 | 8 | 9 | +1 | 18/20 | 2026-04-27 | 10/10 |
 | 17 | Persistent Volumes | 🔨 | 7 | 9 | +1 | 17/20 | 2026-04-29 | Unlocked |
 | 18 | Ingress | 🔨 | 9 | 8 | +0 | 17/20 | 2026-05-01 | Unlocked |
-| 19 | Horizontal Pod Autoscaler | 🔨 | — | — | — | —/20 | — | — |
+| 19 | Horizontal Pod Autoscaler | 🔨 | 9 | 10 | +0 | 19/20 | 2026-05-03 | Unlocked |
 | 20 | Act 2 Capstone | 🏁 | — | — | — | —/30 | — | — |
 
-**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 18 complete
+**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 19 complete
 
 ---
 
@@ -99,14 +99,14 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 ## Performance Stats
 
 ```
-Current Streak:             18 sessions
-Longest Streak:             18 sessions
+Current Streak:             19 sessions
+Longest Streak:             19 sessions
 Best Sprint Score:          20/20
-Average Sprint Score:       18.7
+Average Sprint Score:       18.8
 Perfect Scores (20/20):     4
 Capstone Scores:            29/30 (Act 1)
-Bonus Challenges Earned:    15
-Bonus Challenges Completed: 17 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10, Sprint 14 — 10/10, Sprint 15 — 10/10, Sprint 16 — 10/10, Sprint 17 — 7/10, Sprint 18 — 8/10)
+Bonus Challenges Earned:    16
+Bonus Challenges Completed: 18 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10, Sprint 14 — 10/10, Sprint 15 — 10/10, Sprint 16 — 10/10, Sprint 17 — 7/10, Sprint 18 — 8/10, Sprint 19 — 9/10)
 Deep Dives Completed:       0
 ```
 
@@ -115,27 +115,17 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-05-01
-Sprint:              18 — Ingress
-What was built:      frontend-deployment.yaml + frontend-service.yaml (first K8s frontend deployment).
-                     ingress.yaml — nginx Ingress with two path rules: /api → api-service:8000,
-                     / → frontend-service:3000. Runmatic UI live at runmatic.local in browser.
-                     Phase 3: diagnosed path-rewrite gap (/v2/api/runbooks → 404 from FastAPI),
-                     fixed with rewrite-target: /api/$2, regex capture group (/|$)(.*),
-                     ImplementationSpecific pathType, use-regex: true. Verified with real API data.
-                     Side fixes: nginx.conf resolver trick (deferred DNS resolution), Redis deployed,
-                     ConfigMap REDIS_URL typo fixed, DB migrations run.
-Key concept:         Ingress = one cluster entry point. Ingress resource = routing rules (YAML).
-                     Ingress controller = running Nginx pod that reads and enforces those rules.
-                     Paths pass through UNCHANGED by default — rewrite-target only needed when backend
-                     doesn't match the incoming path. Controller watches K8s API continuously and
-                     reconciles routing config automatically on every ingress.yaml change.
-What was missed:     Controller reconciliation loop — it watches K8s API continuously, not just at
-                     startup. rewrite-target annotation scope — applies to ALL paths in the Ingress
-                     object, not just the one with the regex.
-Carry forward:       Ingress passes paths unchanged by default. Know when to rewrite vs let through.
-                     Sprint 20 Capstone: decide explicitly for each path — rewrite needed or not?
-Next session:        Sprint 19 — Horizontal Pod Autoscaler (worker scales under load)
+Date:                2026-05-03
+Sprint:              19 — Horizontal Pod Autoscaler — COMPLETE — 19/20
+What was built:      metrics-server installed + patched for Docker Desktop (--kubelet-insecure-tls).
+                     worker-deployment.yaml — worker deployment with resource requests (100m/128Mi).
+                     hpa.yaml — HPA targeting runmatic-worker, min 1, max 3, CPU target 50%.
+                     Observed full scale-up (1→3) and scale-down (3→1) cycle with live HPA watch.
+                     Derived replica formula from controller logs: ceil(currentReplicas*(current/target)).
+Key concept:         HPA needs three things: metrics-server (data source), resource requests
+                     (denominator), target utilization (numerator). Remove any one and the loop breaks.
+                     Scale-up: immediate (stabilizationWindowSeconds=0). Scale-down: 300s window.
+Next session:        Sprint 20 — Act 2 Capstone. Wire up the full Kubernetes stack for Runmatic.
 ```
 
 ---

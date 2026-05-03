@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runmatic-worker
+  namespace: default
+  labels:
+    app: runmatic
+    component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: runmatic-worker
+  template:
+    metadata:
+      labels:
+        app: runmatic-worker
+    spec:
+      containers:
+        - name: worker
+          image: runmatic-worker-v1:latest
+          imagePullPolicy: Never
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: runmatic-secrets
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: runmatic-config
+                  key: REDIS_URL
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256M

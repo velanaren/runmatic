@@ -22,13 +22,13 @@ The application was generated with AI to production standards. The infrastructur
 | | |
 |--|--|
 | **Current Act** | Act 2 — Kubernetes |
-| **Sprints Completed** | 18 / 32 |
+| **Sprints Completed** | 19 / 32 |
 | **Average Score** | 18.7 / 20 |
 | **Best Sprint** | 20/20 (Sprints 05, 06, 07, 08) |
-| **Current Streak** | 18 🔥 |
-| **Bonus Challenges** | 17 / 17 completed |
+| **Current Streak** | 19 🔥 |
+| **Bonus Challenges** | 18 / 18 completed |
 | **Act 1 Status** | ✅ COMPLETE — 29/30 capstone (2026-04-18) |
-| **Act 2 Status** | 🔓 IN PROGRESS — Sprint 19 next |
+| **Act 2 Status** | 🔓 IN PROGRESS — Sprint 20 capstone next |
 | **Act 3 Status** | 🔒 Locked |
 
 ### Sprint Log
@@ -53,6 +53,7 @@ The application was generated with AI to production standards. The infrastructur
 | 16 | ConfigMaps & Secrets | 18/20 | 10/10 | 2026-04-27 |
 | 17 | Persistent Volumes & PVCs | 17/20 | 7/10 | 2026-04-29 |
 | 18 | Ingress | 17/20 | 8/10 | 2026-05-01 |
+| 19 | Horizontal Pod Autoscaler | 19/20 | 9/10 | 2026-05-03 |
 
 *Updated after every sprint commit.*
 
