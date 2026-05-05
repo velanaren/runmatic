@@ -9,9 +9,9 @@
 
 ```
 SESSION_PHASE:          active-sprints       (setup | session-0b | active-sprints | complete)
-CURRENT_ACT:            2                   (1=Docker | 2=Kubernetes | 3=Platform)
-CURRENT_SPRINT:         18                  (00 = not started)
-SPRINT_TOPIC:           Ingress
+CURRENT_ACT:            3                   (1=Docker | 2=Kubernetes | 3=Platform)
+CURRENT_SPRINT:         21                  (00 = not started)
+SPRINT_TOPIC:           GitHub Actions CI
 APP_BUILT:              true                (true after Session 0A completes)
 ARCHITECTURE_REVIEW:    true                (true after Session 0B passes 4/5 questions)
 ```
@@ -54,7 +54,7 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 12 | Act 1 Capstone | 🏁 | — | — | — | 29/30 | 2026-04-18 | — |
 
 **Act 1 Status:** ✅ COMPLETE — Docker Mastery Proven (29/30)
-**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 15 complete
+**Act 2 Status:** ✅ COMPLETE — Kubernetes Mastery Proven (26/30)
 
 ---
 
@@ -69,9 +69,9 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 17 | Persistent Volumes | 🔨 | 7 | 9 | +1 | 17/20 | 2026-04-29 | Unlocked |
 | 18 | Ingress | 🔨 | 9 | 8 | +0 | 17/20 | 2026-05-01 | Unlocked |
 | 19 | Horizontal Pod Autoscaler | 🔨 | 9 | 10 | +0 | 19/20 | 2026-05-03 | Unlocked |
-| 20 | Act 2 Capstone | 🏁 | — | — | — | —/30 | — | — |
+| 20 | Act 2 Capstone | 🏁 | 9 | 10 | — | 26/30 | 2026-05-05 | — |
 
-**Act 2 Status:** 🔓 IN PROGRESS — Kubernetes (Sprint 13-20) — Sprint 19 complete
+**Act 2 Status:** ✅ COMPLETE — Kubernetes Mastery Proven (26/30)
 
 ---
 
@@ -92,19 +92,19 @@ Session 0B (Architecture Review):     COMPLETE — 2026-03-26
 | 31 | Security Hardening | 🔨 | — | — | — | —/20 | — | — |
 | 32 | Act 3 Capstone | 🏁 | — | — | — | —/50 | — | — |
 
-**Act 3 Status:** 🔒 LOCKED — Complete Act 2 Capstone (Sprint 20, 24+/30) to unlock
+**Act 3 Status:** 🔓 UNLOCKED — Platform Engineering (Sprint 21-32) — Sprint 20 capstone 26/30
 
 ---
 
 ## Performance Stats
 
 ```
-Current Streak:             19 sessions
-Longest Streak:             19 sessions
+Current Streak:             20 sessions
+Longest Streak:             20 sessions
 Best Sprint Score:          20/20
 Average Sprint Score:       18.8
 Perfect Scores (20/20):     4
-Capstone Scores:            29/30 (Act 1)
+Capstone Scores:            29/30 (Act 1) | 26/30 (Act 2)
 Bonus Challenges Earned:    16
 Bonus Challenges Completed: 18 (Sprint 01 — 9/10, Sprint 02 — 10/10, Sprint 03 — 10/10, Sprint 04 — 7.5/10, Sprint 05 — 10/10, Sprint 06 — 10/10, Sprint 07 — 10/10, Sprint 08 — 7/10, Sprint 09 — 9/10, Sprint 10 — 10/10, Sprint 11 — 9/10, Sprint 13 — 10/10, Sprint 14 — 10/10, Sprint 15 — 10/10, Sprint 16 — 10/10, Sprint 17 — 7/10, Sprint 18 — 8/10, Sprint 19 — 9/10)
 Deep Dives Completed:       0
@@ -115,17 +115,16 @@ Deep Dives Completed:       0
 ## Last Session
 
 ```
-Date:                2026-05-03
-Sprint:              19 — Horizontal Pod Autoscaler — COMPLETE — 19/20
-What was built:      metrics-server installed + patched for Docker Desktop (--kubelet-insecure-tls).
-                     worker-deployment.yaml — worker deployment with resource requests (100m/128Mi).
-                     hpa.yaml — HPA targeting runmatic-worker, min 1, max 3, CPU target 50%.
-                     Observed full scale-up (1→3) and scale-down (3→1) cycle with live HPA watch.
-                     Derived replica formula from controller logs: ceil(currentReplicas*(current/target)).
-Key concept:         HPA needs three things: metrics-server (data source), resource requests
-                     (denominator), target utilization (numerator). Remove any one and the loop breaks.
-                     Scale-up: immediate (stabilizationWindowSeconds=0). Scale-down: 300s window.
-Next session:        Sprint 20 — Act 2 Capstone. Wire up the full Kubernetes stack for Runmatic.
+Date:                2026-05-05
+Sprint:              20 — Act 2 Capstone — COMPLETE — 26/30
+What was built:      sprint-20-capstone/ — 12 unified manifests for the full Runmatic K8s stack.
+                     Fixed ingress path (/v2/api → /api), fixed memory unit (256M → 256Mi).
+                     Split ingress into two objects (api + frontend). All 4 capstone proofs passed:
+                     self-healing, UI via ingress, manual 1→3→1 scaling, HPA triggered to 3 replicas.
+                     PVC data survived kubectl delete all — demo user and runbooks intact from prior session.
+Key concept:         StatefulSet guarantees stable pod identity + stable PVC binding. Deployment does not.
+                     Readiness probes missing from all deployments — carry forward into Act 3.
+Next session:        Sprint 21 — GitHub Actions CI. Act 3: Platform Engineering begins.
 ```
 
 ---
@@ -141,6 +140,6 @@ Next session:        Sprint 20 — Act 2 Capstone. Wire up the full Kubernetes s
 
 ```
 Act 1 — Docker:       ✅ COMPLETE       Score: 29/30 (2026-04-18)
-Act 2 — Kubernetes:   🔓 UNLOCKED       Unlock: Sprint 20 capstone 24+/30
-Act 3 — Platform:     🔒 LOCKED         Unlock: Sprint 32 capstone 40+/50
+Act 2 — Kubernetes:   ✅ COMPLETE       Score: 26/30 (2026-05-05)
+Act 3 — Platform:     🔓 UNLOCKED       Unlock: Sprint 32 capstone 40+/50
 ```
